@@ -1,70 +1,48 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>AI Resume Matcher (Flask + FAISS)</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 10px;
-        }
-        h1 {
-            text-align: center;
-        }
-        textarea {
-            width: 100%;
-            resize: vertical;
-        }
-        .error {
-            color: red;
-            font-weight: bold;
-        }
-        .result-card {
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding: 10px;
-            margin-top: 15px;
-        }
-        .score {
-            font-weight: bold;
-        }
-        pre {
-            white-space: pre-wrap;
-        }
-    </style>
+    <title>Resume Matcher</title>
 </head>
 <body>
-    <h1>AI Resume Matcher</h1>
 
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
+<h2>Upload Resume Folder</h2>
 
-    <form method="POST" enctype="multipart/form-data">
-        <label><b>Job Description</b></label><br>
-        <textarea name="job_description" rows="6" required>{{ job_description or "" }}</textarea>
-        <br><br>
+<form method="post" enctype="multipart/form-data">
+    <textarea name="job_description" placeholder="Enter Job Description" rows="5" cols="60" required></textarea>
+    <br><br>
 
-        <label><b>Upload Resumes (.pdf / .txt)</b></label><br>
-        <input type="file" name="resumes" multiple required accept=".pdf,.txt">
-        <br><br>
+    <label>Select Folder of Resumes (.pdf or .txt)</label><br>
+    <input type="file" name="resumes" webkitdirectory directory multiple required>
 
-        <button type="submit">Match Resumes</button>
-    </form>
+    <br><br>
+    <button type="submit">Match Resumes</button>
+</form>
 
-    {% if results %}
-        <h2>Top Matching Resumes</h2>
+<br>
+
+{% if error %}
+    <p style="color:red">{{ error }}</p>
+{% endif %}
+
+{% if results %}
+    <h2>Top Matching Resumes</h2>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Rank</th>
+            <th>Resume</th>
+            <th>Match %</th>
+            <th>Preview</th>
+        </tr>
         {% for r in results %}
-            <div class="result-card">
-                <p><b>Rank {{ r.rank }}</b> – {{ r.filename }}</p>
-                <p class="score">Match: {{ r.score }}%</p>
-                <p><b>Preview:</b></p>
-                <pre>{{ r.preview }}</pre>
-            </div>
+        <tr>
+            <td>{{ r.rank }}</td>
+            <td>{{ r.filename }}</td>
+            <td>{{ r.score }}%</td>
+            <td>{{ r.preview }}</td>
+        </tr>
         {% endfor %}
-    {% endif %}
+    </table>
+{% endif %}
+
 </body>
 </html>
